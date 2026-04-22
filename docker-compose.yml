@@ -7,6 +7,13 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.exercise-timer-http.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.exercise-timer-http.entrypoints=web"
+      - "traefik.http.routers.exercise-timer-http.middlewares=exercise-timer-https-redirect"
+      - "traefik.http.middlewares.exercise-timer-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.exercise-timer-https-redirect.redirectscheme.permanent=true"
+      # HTTPS
       - "traefik.http.routers.exercise-timer.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.exercise-timer.entrypoints=websecure"
       - "traefik.http.routers.exercise-timer.tls=true"
