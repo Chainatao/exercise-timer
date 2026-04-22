@@ -1,0 +1,25 @@
+{
+  "name": "exercise-timer-zepp",
+  "version": "0.1.7",
+  "private": true,
+  "description": "Zepp OS port of exercise timer",
+  "_moduleAliases": {
+    "zeppos-app-utils": "node_modules/@zeppos/zeus-cli/private-modules/zeppos-app-utils"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "simulate": "node --import tsx src/simulate.ts",
+    "zepp:status": "zeus status",
+    "zepp:dev": "zeus dev",
+    "zepp:dev:balance": "zeus dev -t \"Amazfit Balance\"",
+    "zepp:preview": "zeus preview",
+    "zepp:build": "zeus build"
+  },
+  "devDependencies": {
+    "@zeppos/device-types": "^3.0.1",
+    "@zeppos/zeus-cli": "^1.8.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

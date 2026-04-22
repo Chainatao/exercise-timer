@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exercise Timer</title>
+    <link rel="stylesheet" href="styles.css?v=20260305" />
+  </head>
+  <body>
+    <main class="app" aria-live="polite">
+      <header class="header">
+        <div>
+          <h1>Exercise Timer</h1>
+          <p class="subtle">Choose a program, then start. Auto-advances with controls.</p>
+        </div>
+        <div class="controls">
+          <button id="prevBtn" class="btn secondary" type="button" disabled>Prev</button>
+          <button id="pauseBtn" class="btn secondary" type="button" disabled>Pause</button>
+          <button id="nextBtn" class="btn secondary" type="button" disabled>Next</button>
+          <button id="startBtn" class="btn start" type="button">Start</button>
+        </div>
+      </header>
+
+      <section class="programTabs" aria-label="Program selection">
+        <button class="tabBtn active" type="button" data-program="standard" aria-selected="true">Standard 2x/Week</button>
+        <button class="tabBtn" type="button" data-program="postworkout" aria-selected="false">Post-Workout 3x/Week</button>
+        <button class="tabBtn" type="button" data-program="restday" aria-selected="false">Rest Day 1x Round</button>
+      </section>
+
+      <section class="card hero">
+        <div class="heroInner">
+          <div id="countdown" class="timer heroTimer">00:00</div>
+          <div class="label heroLabel">remaining</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <div>
+            <div class="label">Now</div>
+            <div id="nowTitle" class="title">Ready</div>
+            <div id="nowMeta" class="meta">Press Start when you’re set.</div>
+          </div>
+        </div>
+
+        <div class="bars">
+          <div class="barLabel">Step</div>
+          <div class="bar"><div id="stepBar" class="barFill"></div></div>
+          <div class="barLabel">Session</div>
+          <div class="bar"><div id="sessionBar" class="barFill"></div></div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <div class="label">Next</div>
+            <div id="nextTitle" class="next">—</div>
+          </div>
+          <div class="stats">
+            <div><span class="label">Step</span> <span id="stepIndex">0</span>/<span id="stepTotal">0</span></div>
+            <div><span class="label">Total left</span> <span id="totalLeft">00:00</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card small">
+        <h2 id="programName">Program</h2>
+        <p id="programMeta" class="subtle"></p>
+        <ul id="programDefaults" class="defaults"></ul>
+      </section>
+
+      <footer class="footer subtle">Tip: keep the tab foreground for best timer accuracy.</footer>
+    </main>
+
+    <script src="app.js?v=20260306"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+services:
+  exercise-timer:
+    image: ghcr.io/chainatao/exercise-timer:latest
+    container_name: exercise-timer
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.exercise-timer.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.exercise-timer.entrypoints=websecure"
+      - "traefik.http.routers.exercise-timer.tls.certresolver=myresolver"
+      - "traefik.http.services.exercise-timer.loadbalancer.server.port=8000"
+
+networks:
+  traefik:
+    external: true

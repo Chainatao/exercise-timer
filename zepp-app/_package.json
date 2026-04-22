@@ -1,0 +1,14 @@
+{
+  "name": "exercise-timer",
+  "version": "1.0.0",
+  "description": "Exercise timer for Zepp OS",
+  "main": "app.js",
+  "author": "local",
+  "license": "ISC",
+  "devDependencies": {
+    "@zeppos/device-types": "^3.0.0"
+  },
+  "dependencies": {
+    "@zeppos/zml": "^0.0.38"
+  }
+}

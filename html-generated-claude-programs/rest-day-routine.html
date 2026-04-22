@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rest Day Hip Routine</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --surface: #ede8de;
+    --card: #ffffff;
+    --ink: #1a1814;
+    --muted: #8a8478;
+    --border: #d8d2c4;
+    --accent: #c0392b;
+    --accent2: #2c7a4b;
+    --accent3: #1a5c8a;
+    --warm: #e8a020;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    margin-bottom: 52px;
+    padding-bottom: 36px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 9vw, 88px);
+    line-height: 0.88;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  h1 em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .tagline {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 0;
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .meta-cell {
+    padding: 10px 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .meta-cell:last-child { border-right: none; }
+
+  .meta-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--ink);
+    display: block;
+    letter-spacing: 0.05em;
+  }
+
+  .meta-lbl {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    margin-top: 44px;
+  }
+
+  .section-label:first-of-type { margin-top: 0; }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    min-width: 28px;
+  }
+
+  .section-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-tag {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* EXERCISE CARDS */
+  .exercise-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .exercise-card:hover {
+    box-shadow: 3px 3px 0 var(--border);
+  }
+
+  .card-num {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .card-body {
+    padding: 14px 18px;
+  }
+
+  .card-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .card-name.is-new::after {
+    content: 'NEW';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  .card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .card-time {
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    min-width: 90px;
+    border-left: 1px solid var(--border);
+    gap: 2px;
+  }
+
+  .time-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .time-note {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* FOAM ROLLER — special card */
+  .foam-card {
+    background: var(--card);
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .foam-header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .foam-header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+  }
+
+  .foam-header-badge {
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    background: var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .foam-body {
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 540px) { .foam-body { grid-template-columns: 1fr; } }
+
+  .foam-steps {
+    grid-column: 1 / -1;
+  }
+
+  .foam-step {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .foam-step:last-child { border-bottom: none; }
+
+  .foam-step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    min-width: 20px;
+  }
+
+  .foam-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px 14px;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.6;
+    grid-column: 1 / -1;
+  }
+
+  .foam-note strong { color: var(--ink); }
+
+  .foam-timing {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .foam-timing-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .foam-timing-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+  }
+
+  /* TOTAL BAR */
+  .total-bar {
+    margin-top: 44px;
+    padding: 20px 24px;
+    background: var(--ink);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .total-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+  }
+
+  .total-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--bg);
+    letter-spacing: 0.05em;
+  }
+
+  .total-note {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: rgba(245,240,232,0.5);
+  }
+
+  /* PRINCIPLES */
+  .principles {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .principles { grid-template-columns: 1fr; } }
+
+  .principle {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--card);
+  }
+
+  .principle-icon {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .principle-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .principle-body {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin-top: 36px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .timeline-head {
+    padding: 12px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+  }
+
+  .timeline-row:last-child { border-bottom: none; }
+
+  .tl-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 80px;
+    letter-spacing: 0.05em;
+  }
+
+  .tl-bar {
+    height: 4px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .tl-name {
+    font-size: 12px;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .tl-dur {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 52px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .f-txt { font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .f-accent { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 13px; color: var(--accent2); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <p class="eyebrow">Hip Mobility · Rest Day Protocol</p>
+    <h1>RECOVERY<br><em>FLOW</em></h1>
+    <p class="tagline">Passive, gentle, restorative — no contract-relax, no loading</p>
+    <div class="header-meta">
+      <div class="meta-cell">
+        <span class="meta-val">~22</span>
+        <span class="meta-lbl">Minutes</span>
+      </div>
+      <div class="meta-cell">
+        <span class="meta-val">8</span>
+        <span class="meta-lbl">Exercises</span>
+      </div>
+      <div class="meta-cell">
+        <span class="meta-val">1</span>
+        <span class="meta-lbl">Round</span>
+      </div>
+      <div class="meta-cell">
+        <span class="meta-val">Melt</span>
+        <span class="meta-lbl">Intensity</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: FOAM ROLLER -->
+  <div class="section-label">
+    <span class="section-num">SEC 01</span>
+    <span class="section-name">Psoas Foam Roller Release</span>
+    <span class="section-line"></span>
+    <span class="section-tag" style="background:rgba(192,57,43,0.08);color:var(--accent);border:1px solid rgba(192,57,43,0.2)">Start Here</span>
+  </div>
+
+  <div class="foam-card">
+    <div class="foam-header">
+      <span class="foam-header-title">Foam Roller Psoas Release</span>
+      <span class="foam-header-badge">Deep Tissue</span>
+    </div>
+    <div class="foam-body">
+      <div class="foam-steps">
+
+        <div class="foam-step">
+          <span class="foam-step-num">1</span>
+          <span>Place foam roller horizontally on the floor. Lie <strong style="color:var(--ink)">face down</strong>, positioning the roller just below your hip bone (ASIS) — slightly inward toward your navel.</span>
+        </div>
+
+        <div class="foam-step">
+          <span class="foam-step-num">2</span>
+          <span>Support yourself on your forearms in a <strong style="color:var(--ink)">plank position</strong>. Let bodyweight slowly sink into the roller — don't aggressively roll. Find a tender spot and <strong style="color:var(--ink)">hold</strong>.</span>
+        </div>
+
+        <div class="foam-step">
+          <span class="foam-step-num">3</span>
+          <span>Hold for <strong style="color:var(--ink)">30–60 seconds</strong>, breathing deeply. On each exhale, let more weight drop into the roller. Tiny side-to-side shifts to explore different spots.</span>
+        </div>
+
+        <div class="foam-step">
+          <span class="foam-step-num">4</span>
+          <span><strong style="color:var(--ink)">Optional active component:</strong> Slowly extend the leg on that side straight behind you while compressed — this adds a gentle stretch under the release.</span>
+        </div>
+
+        <div class="foam-step">
+          <span class="foam-step-num">5</span>
+          <span>Switch sides. Repeat.</span>
+        </div>
+
+        <div class="foam-note">
+          <strong>⚠ If you feel nerve pain shooting down your leg</strong> — you've gone too far inward toward the femoral nerve. Shift the roller slightly outward toward the hip bone. A deep, dull, spreading pressure is normal. Sharp or radiating pain is not.
+        </div>
+
+      </div>
+    </div>
+    <div class="foam-timing">
+      <span class="foam-timing-label">Time per side</span>
+      <span class="foam-timing-val">60–90s · EACH SIDE</span>
+    </div>
+  </div>
+
+  <!-- SECTION 2: HIP CAPSULE -->
+  <div class="section-label">
+    <span class="section-num">SEC 02</span>
+    <span class="section-name">Hip Capsule & Flexion</span>
+    <span class="section-line"></span>
+    <span class="section-tag" style="background:rgba(44,122,75,0.08);color:var(--accent2);border:1px solid rgba(44,122,75,0.2)">Supine</span>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">01</div>
+    <div class="card-body">
+      <p class="card-name">Supine Knee-to-Chest Hold</p>
+      <p class="card-desc">Lie on back, pull one knee toward chest with both hands. Keep other leg flat. No contract-relax — purely passive. Breathe into the stretch, let gravity do the work.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val" style="color:var(--accent2)">60s</span>
+      <span class="time-note">per leg</span>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">02</div>
+    <div class="card-body">
+      <p class="card-name">Figure-4 Piriformis Stretch</p>
+      <p class="card-desc">Lying on back, cross ankle over opposite knee (figure-4 shape). Pull both thighs toward chest. Flex the top foot to protect the knee. Deep sensation in outer glute.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val" style="color:var(--accent2)">75s</span>
+      <span class="time-note">per side</span>
+    </div>
+  </div>
+
+  <!-- SECTION 3: HIP FLEXOR -->
+  <div class="section-label">
+    <span class="section-num">SEC 03</span>
+    <span class="section-name">Hip Flexor & Anterior Chain</span>
+    <span class="section-line"></span>
+    <span class="section-tag" style="background:rgba(26,92,138,0.08);color:var(--accent3);border:1px solid rgba(26,92,138,0.2)">Kneeling</span>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">03</div>
+    <div class="card-body">
+      <p class="card-name">Half-Kneeling Hip Flexor Stretch</p>
+      <p class="card-desc">Kneel on one knee, front foot flat. Torso upright — don't lean. Tuck your pelvis (tailbone under), then drive hips gently forward. Feel the stretch at the front of the back hip. Keep the tuck throughout.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val" style="color:var(--accent3)">90s</span>
+      <span class="time-note">per side</span>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">04</div>
+    <div class="card-body">
+      <p class="card-name">Low Lunge / Couch Stretch</p>
+      <p class="card-desc">Low lunge with back knee on floor, or elevate back foot on a couch/wall for deeper version. Arms relaxed, breathe into the front of the hip. No bouncing.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val" style="color:var(--accent3)">90s</span>
+      <span class="time-note">per side</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4: 90/90 -->
+  <div class="section-label">
+    <span class="section-num">SEC 04</span>
+    <span class="section-name">90/90 Passive Hold</span>
+    <span class="section-line"></span>
+    <span class="section-tag" style="background:rgba(232,160,32,0.1);color:var(--warm);border:1px solid rgba(232,160,32,0.25)">Seated</span>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">05</div>
+    <div class="card-body">
+      <p class="card-name">90/90 Passive Hold</p>
+      <p class="card-desc">Sit in 90/90 position. Stay on one side — don't switch actively like in your program sessions. Sit tall, lean gently forward over front shin with a flat back. Just breathe and melt. This is the passive version of your program drill.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val" style="color:var(--warm)">2 min</span>
+      <span class="time-note">per side</span>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ADDUCTOR -->
+  <div class="section-label">
+    <span class="section-num">SEC 05</span>
+    <span class="section-name">Adductor & Inner Hip</span>
+    <span class="section-line"></span>
+    <span class="section-tag" style="background:rgba(26,24,20,0.06);color:var(--muted);border:1px solid var(--border)">Floor</span>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">06</div>
+    <div class="card-body">
+      <p class="card-name">Butterfly Stretch</p>
+      <p class="card-desc">Seated, soles of feet together, knees fall out. Lean forward with a flat back — don't round. Elbows can gently press knees down. Focus on the inner thigh and groin opening.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val">2 min</span>
+      <span class="time-note">total</span>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">07</div>
+    <div class="card-body">
+      <p class="card-name">Wide-Legged Forward Fold</p>
+      <p class="card-desc">Seated straddle, legs wide. Walk hands forward keeping back as flat as possible. Let gravity pull you deeper over 60–90s. Don't pull yourself down — just breathe and release.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val">90s</span>
+      <span class="time-note">total</span>
+    </div>
+  </div>
+
+  <!-- FINISHER -->
+  <div class="section-label">
+    <span class="section-num">SEC 06</span>
+    <span class="section-name">Finish</span>
+    <span class="section-line"></span>
+  </div>
+
+  <div class="exercise-card">
+    <div class="card-num">08</div>
+    <div class="card-body">
+      <p class="card-name">Passive Pike Hold</p>
+      <p class="card-desc">Seated legs straight, fold forward as deep as comfortable. No effort — just gravity. Hold for 90s breathing deeply. This consolidates everything you've just opened.</p>
+    </div>
+    <div class="card-time">
+      <span class="time-val">90s</span>
+      <span class="time-note">total</span>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+    <div class="timeline-head">
+      <span>Exercise Timeline</span>
+      <span>~22 min total</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">0:00 – 3:00</span>
+      <div class="tl-bar" style="width:60px;background:var(--accent)"></div>
+      <span class="tl-name">Psoas Foam Roller Release</span>
+      <span class="tl-dur">3 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">3:00 – 5:00</span>
+      <div class="tl-bar" style="width:40px;background:var(--accent2)"></div>
+      <span class="tl-name">Knee-to-Chest Hold (both legs)</span>
+      <span class="tl-dur">2 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">5:00 – 7:30</span>
+      <div class="tl-bar" style="width:50px;background:var(--accent2)"></div>
+      <span class="tl-name">Figure-4 Piriformis (both sides)</span>
+      <span class="tl-dur">2.5 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">7:30 – 10:30</span>
+      <div class="tl-bar" style="width:60px;background:var(--accent3)"></div>
+      <span class="tl-name">Half-Kneeling Hip Flexor (both sides)</span>
+      <span class="tl-dur">3 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">10:30 – 13:30</span>
+      <div class="tl-bar" style="width:60px;background:var(--accent3)"></div>
+      <span class="tl-name">Low Lunge / Couch Stretch (both sides)</span>
+      <span class="tl-dur">3 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">13:30 – 17:30</span>
+      <div class="tl-bar" style="width:80px;background:var(--warm)"></div>
+      <span class="tl-name">90/90 Passive Hold (both sides)</span>
+      <span class="tl-dur">4 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">17:30 – 19:30</span>
+      <div class="tl-bar" style="width:40px;background:var(--muted)"></div>
+      <span class="tl-name">Butterfly Stretch</span>
+      <span class="tl-dur">2 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">19:30 – 21:00</span>
+      <div class="tl-bar" style="width:30px;background:var(--muted)"></div>
+      <span class="tl-name">Wide-Legged Forward Fold</span>
+      <span class="tl-dur">1.5 MIN</span>
+    </div>
+    <div class="timeline-row">
+      <span class="tl-time">21:00 – 22:30</span>
+      <div class="tl-bar" style="width:30px;background:var(--ink)"></div>
+      <span class="tl-name">Passive Pike Hold</span>
+      <span class="tl-dur">1.5 MIN</span>
+    </div>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="total-bar">
+    <div>
+      <p class="total-label">Total Session Time</p>
+      <p class="total-value">~22 MINUTES · 1 ROUND</p>
+    </div>
+    <p class="total-note">Feel like melting, not working</p>
+  </div>
+
+  <!-- PRINCIPLES -->
+  <div class="principles">
+    <div class="principle">
+      <span class="principle-icon">🫁</span>
+      <p class="principle-title">Breathe Into It</p>
+      <p class="principle-body">Exhale deeply in every hold. Your nervous system releases protective tension on the exhale — earning you extra range for free.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-icon">🚫</span>
+      <p class="principle-title">No Loading</p>
+      <p class="principle-body">Zero contract-relax, zero PAILs/RAILs. Those create micro-stress that needs recovery. Today is tissue maintenance only.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-icon">🔥</span>
+      <p class="principle-title">If Sore, Skip It</p>
+      <p class="principle-body">If an area is fatigued from a program session, skip that stretch entirely. A short walk or gentle hip circles is enough.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="f-txt">Rest Day Hip Routine · Passive Protocol</span>
+    <span class="f-accent">Complement to Hip Unlock 3-Week Program</span>
+  </footer>
+
+</div>
+</body>
+</html>
