@@ -9,6 +9,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.exercise-timer.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.exercise-timer.entrypoints=websecure"
+      - "traefik.http.routers.exercise-timer.tls=true"
       - "traefik.http.routers.exercise-timer.tls.certresolver=myresolver"
       - "traefik.http.services.exercise-timer.loadbalancer.server.port=8000"
 
