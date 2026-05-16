@@ -194,6 +194,7 @@ const PROGRAMS = {
  * @property {number} seconds
  * @property {"work"|"rest"|"transition"} kind
  * @property {string} exerciseKey
+ * @property {number=} round
  */
 
 function pad2(n) {
@@ -214,10 +215,24 @@ function sumSeconds(steps) {
 function buildWorkStepsForProgram(cfg) {
   /** @type {Step[]} */
   const steps = [];
-  const addWork = (exerciseKey, title, meta, seconds) =>
-    steps.push({ title, meta, seconds, kind: "work", exerciseKey });
-  const addRest = (exerciseKey, title, meta, seconds) =>
-    steps.push({ title, meta, seconds, kind: "rest", exerciseKey });
+  const addWork = (exerciseKey, title, meta, seconds, round = null) =>
+    steps.push({
+      title,
+      meta,
+      seconds,
+      kind: "work",
+      exerciseKey,
+      ...(Number.isFinite(round) ? { round: Math.floor(round) } : {}),
+    });
+  const addRest = (exerciseKey, title, meta, seconds, round = null) =>
+    steps.push({
+      title,
+      meta,
+      seconds,
+      kind: "rest",
+      exerciseKey,
+      ...(Number.isFinite(round) ? { round: Math.floor(round) } : {}),
+    });
 
   if (cfg.customFlow && Array.isArray(cfg.customFlow)) {
     const sides = ["Left", "Right"];
@@ -285,13 +300,15 @@ function buildWorkStepsForProgram(cfg) {
           "gastro",
           "2) Standing straight-leg calf stretch (PIR)",
           `Round ${round}/${cfg.rounds} • ${leg} leg • Set ${set}/${cfg.gastro.setsPerLeg} • Contract (press ball of foot)`,
-          cfg.gastro.contractSeconds
+          cfg.gastro.contractSeconds,
+          round
         );
         addWork(
           "gastro",
           "2) Standing straight-leg calf stretch (PIR)",
           `Round ${round}/${cfg.rounds} • ${leg} leg • Set ${set}/${cfg.gastro.setsPerLeg} • Hold deeper stretch`,
-          cfg.gastro.holdSeconds
+          cfg.gastro.holdSeconds,
+          round
         );
       }
     }
@@ -304,13 +321,15 @@ function buildWorkStepsForProgram(cfg) {
           "hamstring",
           "3) Supine hamstring iso + stretch",
           `Round ${round}/${cfg.rounds} • ${leg} leg • Set ${set}/${cfg.hamstring.setsPerLeg} • Isometric push (50–60%)`,
-          cfg.hamstring.isoSeconds
+          cfg.hamstring.isoSeconds,
+          round
         );
         addWork(
           "hamstring",
           "3) Supine hamstring iso + stretch",
           `Round ${round}/${cfg.rounds} • ${leg} leg • Set ${set}/${cfg.hamstring.setsPerLeg} • Passive stretch`,
-          cfg.hamstring.passiveSeconds
+          cfg.hamstring.passiveSeconds,
+          round
         );
       }
     }
@@ -327,13 +346,15 @@ function buildWorkStepsForProgram(cfg) {
           "hip_switch_9090",
           "2) 90/90 Hip Switches",
           `Round ${round}/${cfg.rounds} • Set ${set}/${sets} • Switch ${sw}/${switchesPerSet} • Left side hold (sit tall, hinge forward)`,
-          holdPerSideSeconds
+          holdPerSideSeconds,
+          round
         );
         addWork(
           "hip_switch_9090",
           "2) 90/90 Hip Switches",
           `Round ${round}/${cfg.rounds} • Set ${set}/${sets} • Switch ${sw}/${switchesPerSet} • Right side hold (sit tall, hinge forward)`,
-          holdPerSideSeconds
+          holdPerSideSeconds,
+          round
         );
       }
     }
@@ -346,7 +367,8 @@ function buildWorkStepsForProgram(cfg) {
           "pike_lifts",
           "4) Seated pike active leg lifts",
           `Round ${round}/${cfg.rounds} • Set ${set}/${cfg.pikeLifts.sets} • Rep ${rep}/${cfg.pikeLifts.reps} • Up ${cfg.pikeLifts.upSeconds}s + hold ${cfg.pikeLifts.topHoldSeconds}s + down ${cfg.pikeLifts.downSeconds}s`,
-          cfg.pikeLifts.upSeconds + cfg.pikeLifts.topHoldSeconds + cfg.pikeLifts.downSeconds
+          cfg.pikeLifts.upSeconds + cfg.pikeLifts.topHoldSeconds + cfg.pikeLifts.downSeconds,
+          round
         );
       }
       if (set !== cfg.pikeLifts.sets) {
@@ -354,7 +376,8 @@ function buildWorkStepsForProgram(cfg) {
           "rest_sets",
           "Rest",
           `Between sets (${cfg.pikeLifts.restBetweenSetsSeconds}s)`,
-          cfg.pikeLifts.restBetweenSetsSeconds
+          cfg.pikeLifts.restBetweenSetsSeconds,
+          round
         );
       }
     }
@@ -367,13 +390,15 @@ function buildWorkStepsForProgram(cfg) {
         "seated_pike",
         `${exerciseNumber}) Seated pike loaded progressive`,
         `Round ${round}/${cfg.rounds} • Cycle ${cycle}/${cfg.seatedPikeLoaded.cycles} • Contract hip flexors + quads`,
-        cfg.seatedPikeLoaded.contractSeconds
+        cfg.seatedPikeLoaded.contractSeconds,
+        round
       );
       addWork(
         "seated_pike",
         `${exerciseNumber}) Seated pike loaded progressive`,
         `Round ${round}/${cfg.rounds} • Cycle ${cycle}/${cfg.seatedPikeLoaded.cycles} • Fold deeper + breathe`,
-        cfg.seatedPikeLoaded.holdSeconds
+        cfg.seatedPikeLoaded.holdSeconds,
+        round
       );
     }
   };
@@ -392,7 +417,8 @@ function buildWorkStepsForProgram(cfg) {
           "rest_exercises",
           "Rest",
           `Between exercises (${cfg.restBetweenExercisesSeconds}s)`,
-          cfg.restBetweenExercisesSeconds
+          cfg.restBetweenExercisesSeconds,
+          round
         );
       }
     }
@@ -402,7 +428,8 @@ function buildWorkStepsForProgram(cfg) {
         "rest_rounds",
         "Rest",
         `Between rounds (${cfg.restBetweenRoundsSeconds}s)`,
-        cfg.restBetweenRoundsSeconds
+        cfg.restBetweenRoundsSeconds,
+        round
       );
     }
   }
@@ -794,11 +821,20 @@ function start() {
   const program = PROGRAMS[currentProgramKey];
   let work = buildWorkStepsForProgram(program);
   if (startFromRound > 1) {
-    const roundStartPattern = new RegExp(`\\bRound\\s+${startFromRound}\\s*/`);
-    const roundStartIdx = work.findIndex((step) => roundStartPattern.test(step.meta));
-    if (roundStartIdx > 0) {
-      work = work.slice(roundStartIdx);
+    const selectedRound = Math.floor(startFromRound);
+    const roundStartIdx = work.findIndex((step) => step.round === selectedRound);
+    const fallbackRoundStartPattern = new RegExp(
+      `\\bRound\\s+${selectedRound}\\s*/\\s*\\d+\\b`,
+      "i"
+    );
+    const fallbackRoundStartIdx = work.findIndex((step) =>
+      fallbackRoundStartPattern.test(step.meta)
+    );
+    const startIdx = roundStartIdx >= 0 ? roundStartIdx : fallbackRoundStartIdx;
+    if (startIdx > 0) {
+      work = work.slice(startIdx);
     }
+    work = work.filter((step) => step.round === undefined || step.round >= selectedRound);
   }
 
   activeTransitionSeconds = program.transitionSeconds;
