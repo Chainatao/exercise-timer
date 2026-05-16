@@ -49,6 +49,25 @@ body{
   flex-wrap: wrap;
 }
 
+.roundStartSelectWrap{
+  margin-top: 10px;
+}
+
+.roundStartSelect{
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 650;
+}
+
+.roundStartSelect:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .tabBtn{
   appearance: none;
   border: 1px solid var(--border);
