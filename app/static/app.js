@@ -464,6 +464,7 @@ const ui = {
   programMeta: document.getElementById("programMeta"),
   programDefaults: document.getElementById("programDefaults"),
   programTabs: Array.from(document.querySelectorAll("[data-program]")),
+  roundStartSelect: document.getElementById("roundStartSelect"),
   roundStartButtons: document.getElementById("roundStartButtons"),
 };
 
@@ -589,6 +590,18 @@ function updateRoundStartButtons() {
   const rounds = getProgramRounds(program);
   const safeRound = Math.min(rounds, Math.max(1, startFromRound));
   startFromRound = safeRound;
+
+  if (ui.roundStartSelect) {
+    ui.roundStartSelect.innerHTML = "";
+    for (let round = 1; round <= rounds; round++) {
+      const option = document.createElement("option");
+      option.value = String(round);
+      option.textContent = `Round ${round}`;
+      ui.roundStartSelect.appendChild(option);
+    }
+    ui.roundStartSelect.value = String(startFromRound);
+    ui.roundStartSelect.disabled = running || rounds <= 1;
+  }
 
   ui.roundStartButtons.innerHTML = "";
   for (let round = 1; round <= rounds; round++) {
@@ -843,6 +856,17 @@ ui.pauseBtn.addEventListener("click", () => {
 for (const btn of ui.programTabs) {
   btn.addEventListener("click", () => {
     selectProgram(btn.dataset.program || "");
+  });
+}
+
+if (ui.roundStartSelect) {
+  ui.roundStartSelect.addEventListener("change", () => {
+    if (running) return;
+    const selectedRound = Number(ui.roundStartSelect.value);
+    if (!Number.isFinite(selectedRound) || selectedRound < 1) return;
+    startFromRound = Math.floor(selectedRound);
+    updateRoundStartButtons();
+    resetIdleDisplay();
   });
 }
 
