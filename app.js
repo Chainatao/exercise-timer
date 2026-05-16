@@ -464,10 +464,12 @@ const ui = {
   programMeta: document.getElementById("programMeta"),
   programDefaults: document.getElementById("programDefaults"),
   programTabs: Array.from(document.querySelectorAll("[data-program]")),
+  roundStartButtons: document.getElementById("roundStartButtons"),
 };
 
 let currentProgramKey = "standard";
 let activeTransitionSeconds = 3;
+let startFromRound = 1;
 
 let steps = [];
 let stepIdx = 0;
@@ -577,12 +579,47 @@ function updateProgramTabs() {
   });
 }
 
+function getProgramRounds(program) {
+  const rounds = Number(program?.rounds);
+  return Number.isFinite(rounds) && rounds > 0 ? Math.floor(rounds) : 1;
+}
+
+function updateRoundStartButtons() {
+  const program = PROGRAMS[currentProgramKey];
+  const rounds = getProgramRounds(program);
+  const safeRound = Math.min(rounds, Math.max(1, startFromRound));
+  startFromRound = safeRound;
+
+  ui.roundStartButtons.innerHTML = "";
+  for (let round = 1; round <= rounds; round++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tabBtn";
+    if (round === startFromRound) {
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      btn.setAttribute("aria-pressed", "false");
+    }
+    btn.disabled = running;
+    btn.textContent = `Round ${round}`;
+    btn.addEventListener("click", () => {
+      if (running) return;
+      startFromRound = round;
+      updateRoundStartButtons();
+      resetIdleDisplay();
+    });
+    ui.roundStartButtons.appendChild(btn);
+  }
+}
+
 function updateNavButtons() {
   const canNav = running && !paused;
   ui.prevBtn.disabled = !canNav || stepIdx <= 0;
   ui.nextBtn.disabled = !canNav;
   ui.pauseBtn.disabled = !running;
   ui.pauseBtn.textContent = paused ? "Resume" : "Pause";
+  updateRoundStartButtons();
 }
 
 function renderProgramDetails() {
@@ -600,8 +637,10 @@ function renderProgramDetails() {
 
 function resetIdleDisplay() {
   if (running) return;
+  const rounds = getProgramRounds(PROGRAMS[currentProgramKey]);
+  const roundLabel = rounds > 1 ? ` from Round ${startFromRound}` : "";
   ui.nowTitle.textContent = "Ready";
-  ui.nowMeta.textContent = `Selected: ${PROGRAMS[currentProgramKey].title}. Press Start when you’re set.`;
+  ui.nowMeta.textContent = `Selected: ${PROGRAMS[currentProgramKey].title}. Press Start${roundLabel} when you’re set.`;
   ui.countdown.textContent = "00:00";
   ui.nextTitle.textContent = "—";
   ui.stepIndex.textContent = "0";
@@ -618,7 +657,9 @@ function selectProgram(programKey) {
 
   currentProgramKey = programKey;
   activeTransitionSeconds = PROGRAMS[currentProgramKey].transitionSeconds;
+  startFromRound = 1;
   updateProgramTabs();
+  updateRoundStartButtons();
   renderProgramDetails();
   resetIdleDisplay();
 }
@@ -738,7 +779,14 @@ function tick() {
 function start() {
   ensureAudioReady();
   const program = PROGRAMS[currentProgramKey];
-  const work = buildWorkStepsForProgram(program);
+  let work = buildWorkStepsForProgram(program);
+  if (startFromRound > 1) {
+    const roundStartPattern = new RegExp(`\\bRound\\s+${startFromRound}\\s*/`);
+    const roundStartIdx = work.findIndex((step) => roundStartPattern.test(step.meta));
+    if (roundStartIdx > 0) {
+      work = work.slice(roundStartIdx);
+    }
+  }
 
   activeTransitionSeconds = program.transitionSeconds;
   steps = withTransitions(work, activeTransitionSeconds);
@@ -759,6 +807,7 @@ function start() {
   tick();
 
   updateProgramTabs();
+  updateRoundStartButtons();
 
   if (tickTimer) clearInterval(tickTimer);
   tickTimer = setInterval(tick, 120);

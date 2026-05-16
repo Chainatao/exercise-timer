@@ -42,6 +42,13 @@ body{
   flex-wrap: wrap;
 }
 
+.roundStartButtons{
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .tabBtn{
   appearance: none;
   border: 1px solid var(--border);
